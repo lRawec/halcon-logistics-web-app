@@ -1,59 +1,95 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Markdown
+# Halcon: A Construction Logistics & Order Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Project Description
+**Halcon** is a dedicated internal management platform designed for a construction material distributor. The application digitizes the entire lifecycle of a customer order—from the initial sales call to the final physical delivery at the construction site. 
 
-## About Laravel
+The system serves as a bridge between the office, the warehouse, and the field, providing real-time visibility to both employees and customers through a secure, role-based dashboard and a public tracking interface.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Project Objectives
+* **Process Automation:** Replace manual tracking with a digital workflow that reduces human error.
+* **Operational Transparency:** Allow customers to self-serve their order status without needing to call the office.
+* **Accountability:** Implement mandatory photographic evidence at key stages (Loading and Delivery).
+* **Data Integrity:** Maintain a full history of all orders, including "deleted" entries, to ensure no record is ever truly lost.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Stakeholders & Roles
+The system is built around the specific hierarchy of the Halcon team:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+| Role | Key Responsibility |
+| :--- | :--- |
+| **Admin** | User onboarding and permission management. |
+| **Sales** | Order entry, customer data management, and fiscal record linking. |
+| **Warehouse** | Inventory verification, order preparation, and stock alerts for Purchasing. |
+| **Purchasing** | Sourcing materials that are out of stock or low in inventory. |
+| **Route** | Logistics execution and uploading photographic Proof of Delivery (PoD). |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## The Halcon Order Life Cycle
+To ensure consistency, orders must progress through the following mandatory statuses:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1.  **Ordered:** Initial state created by Sales.
+2.  **In Process:** Claimed by the Warehouse for picking and packing.
+3.  **In Route:** Unit is loaded; **Photo 1 (Loaded Unit)** is required.
+4.  **Delivered:** Material arrives at the destination; **Photo 2 (Unloaded Material)** is required.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Key Functional Modules
 
-## Contributing
+### Customer Tracking Portal
+A simplified public view where customers enter their **Invoice Number** to see their status. Upon delivery, the system displays the final delivery photo as proof.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Administrative Dashboard
+A private environment for staff to manage the "live" list of orders.
+* **Search Engine:** Filter by Invoice, Customer ID, Date, or Status.
+* **Soft-Delete Logic:** Orders are never hard-deleted; they are moved to a "Restoration Screen" (Archived Orders) where they can be recovered if needed.
+* **Evidence Management:** Role-specific functionality for uploading and viewing logistical photos.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Technical Stack & Architecture (Evidence 2 Implementation)
+This platform was built leveraging modern web development standards and MVC architecture:
+* **Backend Framework:** Laravel (PHP)
+* **Database:** MySQL / SQLite (Eloquent ORM)
+* **Authentication:** Custom session-based login with Middleware protection.
+* **File Storage:** Local storage system for secure evidence image uploads (`storage:link`).
+* **Database Design:** Implementation of Foreign Keys (1:N relationships between Orders, Customers, Users, and Photo Evidences) and SoftDeletes.
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Local Setup Instructions
+To run this project locally for testing and evaluation:
 
-## License
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/lRawec/halcon-logistics-web-app.git](https://github.com/lRawec/halcon-logistics-web-app.git)
+Install dependencies:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Bash
+composer install
+npm install && npm run build
+Setup the environment file (.env) and configure your database credentials.
+
+Run migrations and seeders (loads initial Admin and Customers):
+
+Bash
+php artisan migrate --seed
+Link the storage folder (crucial for evidence images to load):
+
+Bash
+php artisan storage:link
+Start the local server:
+
+Bash
+php artisan serve
+Future Roadmap
+Integration with email services for automated fiscal invoice delivery.
+
+GPS tracking for the Route department.
+
+Inventory level analytics for the Purchasing department.
