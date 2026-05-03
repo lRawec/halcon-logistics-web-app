@@ -16,6 +16,7 @@ class Order extends Model
         'invoice_number',
         'order_date_time',
         'notes',
+        'delivery_address',
         'status'
     ];
 

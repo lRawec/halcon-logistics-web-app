@@ -1,4 +1,3 @@
-Markdown
 # Halcon: A Construction Logistics & Order Management System
 
 ## Project Description
@@ -10,22 +9,22 @@ The system serves as a bridge between the office, the warehouse, and the field, 
 
 ## Project Objectives
 * **Process Automation:** Replace manual tracking with a digital workflow that reduces human error.
-* **Operational Transparency:** Allow customers to self-serve their order status without needing to call the office.
-* **Accountability:** Implement mandatory photographic evidence at key stages (Loading and Delivery).
-* **Data Integrity:** Maintain a full history of all orders, including "deleted" entries, to ensure no record is ever truly lost.
+* **Operational Transparency:** Allow customers to self-serve their order status dynamically without needing to call the office.
+* **Accountability:** Implement mandatory photographic evidence at key logistics stages.
+* **Data Integrity & Security:** Maintain a full history of all orders using logical deletions (Soft Deletes) and restrict system access through strict Role-Based Access Control (RBAC).
 
 ---
 
 ## Stakeholders & Roles
-The system is built around the specific hierarchy of the Halcon team:
+The system is built around the specific hierarchy of the Halcon team, safeguarded by custom middleware:
 
-| Role | Key Responsibility |
-| :--- | :--- |
-| **Admin** | User onboarding and permission management. |
-| **Sales** | Order entry, customer data management, and fiscal record linking. |
-| **Warehouse** | Inventory verification, order preparation, and stock alerts for Purchasing. |
-| **Purchasing** | Sourcing materials that are out of stock or low in inventory. |
-| **Route** | Logistics execution and uploading photographic Proof of Delivery (PoD). |
+| Role | Key Responsibility | System Access Level |
+| :--- | :--- | :--- |
+| **Admin** | User onboarding and permission management. | Full access to all modules and user creation. |
+| **Sales** | Order entry, customer data management. | Can create orders and view active/archived lists. |
+| **Warehouse** | Inventory verification and order preparation. | Can update statuses to *In Process* and *In Route*. |
+| **Purchasing** | Sourcing materials out of stock. | View-only access to specific dashboard metrics. |
+| **Route** | Logistics execution and evidence uploads. | Can update to *Delivered* and upload photos. |
 
 ---
 
@@ -39,26 +38,30 @@ To ensure consistency, orders must progress through the following mandatory stat
 
 ---
 
-## Key Functional Modules
+## Key Functional Modules (Evidence 3 Implementation)
 
-### Customer Tracking Portal
-A simplified public view where customers enter their **Invoice Number** to see their status. Upon delivery, the system displays the final delivery photo as proof.
+### 1. Customer Tracking Portal (Welcome View)
+A public, Tailwind CSS-styled portal where customers enter their **Customer Number** and **Invoice Number** to see their real-time status. Upon delivery, the system displays the final delivery photo as proof.
 
-### Administrative Dashboard
-A private environment for staff to manage the "live" list of orders.
-* **Search Engine:** Filter by Invoice, Customer ID, Date, or Status.
-* **Soft-Delete Logic:** Orders are never hard-deleted; they are moved to a "Restoration Screen" (Archived Orders) where they can be recovered if needed.
-* **Evidence Management:** Role-specific functionality for uploading and viewing logistical photos.
+### 2. Administrative Dashboard & Order Management
+A private, role-protected environment for staff to manage the "live" list of orders:
+* **Advanced Search Engine:** Filter active orders by Invoice, Customer ID, Date, or Status.
+* **Soft-Delete Logic (Trash):** Orders are never hard-deleted. They are hidden and moved to an "Archived Orders" screen where they can be restored or audited.
+* **Photo Evidence System:** Role-specific file upload functionality securely storing logistics photos via Laravel's local storage.
+
+### 3. User Experience (UX) & Notifications
+* **Visual Alerts:** Integration of Toastr notifications to provide immediate user feedback on all CRUD operations, status changes, and permission denials (403 Custom View).
+* **Responsive Design:** Complete UI overhaul using modern frameworks to ensure accessibility across desktop and mobile devices.
 
 ---
 
-## Technical Stack & Architecture (Evidence 2 Implementation)
-This platform was built leveraging modern web development standards and MVC architecture:
-* **Backend Framework:** Laravel (PHP)
-* **Database:** MySQL / SQLite (Eloquent ORM)
-* **Authentication:** Custom session-based login with Middleware protection.
-* **File Storage:** Local storage system for secure evidence image uploads (`storage:link`).
-* **Database Design:** Implementation of Foreign Keys (1:N relationships between Orders, Customers, Users, and Photo Evidences) and SoftDeletes.
+## Technical Stack & Architecture
+This platform leverages modern web development standards and MVC architecture:
+* **Backend Framework:** Laravel 11 (PHP 8.2)
+* **Frontend:** Blade Templating Engine, Tailwind CSS (via Vite), Toastr.
+* **Database:** MySQL (Eloquent ORM, Migrations, Seeders).
+* **Authentication & Security:** Custom session-based login, RBAC Middleware, Custom 403 pages.
+* **File Storage:** Local storage system for secure evidence image uploads.
 
 ---
 
@@ -68,28 +71,39 @@ To run this project locally for testing and evaluation:
 1. Clone the repository:
    ```bash
    git clone [https://github.com/lRawec/halcon-logistics-web-app.git](https://github.com/lRawec/halcon-logistics-web-app.git)
-Install dependencies:
+   ```
 
-Bash
-composer install
-npm install && npm run build
-Setup the environment file (.env) and configure your database credentials.
+## Install dependencies:
 
-Run migrations and seeders (loads initial Admin and Customers):
+   ```Bash
+   composer install
+   npm install && npm run build
+   ```
 
-Bash
-php artisan migrate --seed
-Link the storage folder (crucial for evidence images to load):
+3. Setup the environment file (.env) and configure your database credentials.
 
-Bash
-php artisan storage:link
-Start the local server:
+4. Run migrations and seeders (loads initial users and test data):
 
-Bash
-php artisan serve
-Future Roadmap
-Integration with email services for automated fiscal invoice delivery.
+   ```Bash
+   php artisan migrate:fresh --seed
+   ```
 
-GPS tracking for the Route department.
+5. Link the storage folder (crucial for evidence images to load):
+   ```Bash
+   php artisan storage:link
+   ```
 
-Inventory level analytics for the Purchasing department.
+6. Start the local server:
+
+   ```Bash
+   php artisan serve
+
+## Test Credentials
+
+* **Admin:** admin / admin123
+
+* **Sales:** sales_user / sales123
+
+* **Warehouse:** warehouse_user / warehouse123
+
+* **Route:** route_user / route123

@@ -8,20 +8,17 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // Mostrar lista de usuarios
     public function index()
     {
-        $users = User::all();
+        $users = \App\Models\User::all();
         return view('users.index', compact('users'));
     }
 
-    // Mostrar formulario de creación
     public function create()
     {
         return view('users.create');
     }
 
-    // Guardar nuevo usuario
     public function store(Request $request)
     {
         $request->validate([
@@ -40,13 +37,11 @@ class UserController extends Controller
         return redirect()->route('users.index');
     }
 
-    // Mostrar formulario de edición
     public function edit(User $user)
     {
         return view('users.edit', compact('user'));
     }
 
-    // Actualizar usuario (datos, rol y estado)
     public function update(Request $request, User $user)
     {
         $request->validate([
